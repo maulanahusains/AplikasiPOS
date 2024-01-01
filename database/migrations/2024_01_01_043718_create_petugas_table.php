@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('petugas', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->string('username');
             $table->string('password');
             $table->enum('level', ['Admin', 'Kasir']);

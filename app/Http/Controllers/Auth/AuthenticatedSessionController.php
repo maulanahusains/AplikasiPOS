@@ -19,7 +19,15 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Auth/Login', [
+        return Inertia::render('Auth/Users/Login', [
+            'canResetPassword' => Route::has('password.request'),
+            'status' => session('status'),
+        ]);
+    }
+
+    public function create_petugas(): Response
+    {
+        return Inertia::render('Auth/Petugas/Login', [
             'canResetPassword' => Route::has('password.request'),
             'status' => session('status'),
         ]);
@@ -37,6 +45,18 @@ class AuthenticatedSessionController extends Controller
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 
+    public function store_petugas(LoginRequest $request, $level = null): RedirectResponse
+    {
+        $request->authenticate('username', 'petugas');
+
+        $request->session()->regenerate();
+
+        if(!$level) {
+            return redirect()->route('dashboard.admin');
+        }
+        return redirect()->route('dashboard.petugas');
+    }
+
     /**
      * Destroy an authenticated session.
      */
@@ -49,5 +69,17 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    public function destroy_petugas(Request $request): RedirectResponse
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect()
+            ->route('login.petugas');
     }
 }

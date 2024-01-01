@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Petugas\DashboardController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
@@ -38,5 +39,15 @@ Route::middleware('auth')->group(function () {
 Route::get('/components/buttons', function () {
     return Inertia::render('Components/Buttons');
 })->middleware(['auth', 'verified'])->name('components.buttons');
+
+Route::middleware(['auth:petugas'])->prefix('adminp4nel')->group(function() {
+    Route::middleware(['level:Admin'])->group(function() {
+        Route::get('/dashboard', [DashboardController::class, 'dashboard_admin'])->name('dashboard.admin');
+    });
+    
+    Route::middleware(['level:Kasir'])->group(function() {
+        Route::get('/dashboard', [DashboardController::class, 'dashboard_petugas'])->name('dashboard.petugas');
+    });
+});
 
 require __DIR__ . '/auth.php';

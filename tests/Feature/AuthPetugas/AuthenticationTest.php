@@ -20,9 +20,7 @@ class AuthenticationTest extends TestCase
     }
     
     public function test_to_authenticate_admin(): void {
-        $admin = Petugas::factory()->create([
-            'level' => 'Admin'
-        ]);
+        $admin = Petugas::factory()->create();
         
         $response = $this->post('/adminp4nel/login', [
             'username' => $admin->username,
@@ -51,7 +49,7 @@ class AuthenticationTest extends TestCase
             'level' => 'Kasir'
         ]);
         
-        $response = $this->post('/adminp4nel/login', [
+        $response = $this->post('/adminp4nel/login/Kasir', [
             'username' => $petugas->username,
             'password' => 'password'
         ]);
@@ -65,7 +63,7 @@ class AuthenticationTest extends TestCase
             'level' => 'Kasir'
         ]);
         
-        $response = $this->post('/adminp4nel/login', [
+        $response = $this->post('/adminp4nel/login/Kasir', [
             'username' => $petugas->username,
             'password' => 'wrong-password'
         ]);
@@ -74,11 +72,9 @@ class AuthenticationTest extends TestCase
     }
 
     public function test_to_can_logout_admin(): void {
-        $admin = Petugas::factory()->create([
-            'level' => 'Admin'
-        ]);
+        $admin = Petugas::factory()->create();
         
-        $response = $this->actingAs($admin)->get('/adminp4nel/logout');
+        $response = $this->actingAs($admin)->post('/adminp4nel/logout');
 
         $this->assertGuest();
         $response->assertRedirectToRoute('login.petugas');

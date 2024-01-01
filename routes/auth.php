@@ -33,6 +33,30 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
                 ->name('password.store');
+
+    Route::prefix('/adminp4nel')->group(function() {
+        Route::get('register', [RegisteredUserController::class, 'create_petugas'])
+                    ->name('register.petugas');
+    
+        Route::post('register', [RegisteredUserController::class, 'store_petugas']);
+    
+        Route::get('/', [AuthenticatedSessionController::class, 'create_petugas'])
+                    ->name('login.petugas');
+    
+        Route::post('login/{level}', [AuthenticatedSessionController::class, 'store_petugas']);
+    
+        Route::get('forgot-password', [PasswordResetLinkController::class, 'create_petugas'])
+                    ->name('password.request.petugas');
+    
+        Route::post('forgot-password', [PasswordResetLinkController::class, 'store_petugas'])
+                    ->name('password.email.petugas');
+    
+        Route::get('reset-password/{token}', [NewPasswordController::class, 'create_petugas'])
+                    ->name('password.reset.petugas');
+    
+        Route::post('reset-password', [NewPasswordController::class, 'store_petugas'])
+                    ->name('password.store.petugas');
+    });
 });
 
 Route::middleware('auth')->group(function () {
@@ -56,4 +80,29 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->name('logout');
+
+
+});
+
+Route::middleware(['auth:petugas'])->prefix('adminp4nel')->group(function() {
+    Route::get('verify-email', EmailVerificationPromptController::class)
+        ->name('verification.notice.petugas');
+
+    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
+        ->middleware(['signed', 'throttle:6,1'])
+        ->name('verification.verify.petugas');
+
+    Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store_petugas'])
+        ->middleware('throttle:6,1')
+        ->name('verification.send.petugas');
+
+    Route::get('confirm-password', [ConfirmablePasswordController::class, 'show_petugas'])
+        ->name('password.confirm.petugas');
+
+    Route::post('confirm-password', [ConfirmablePasswordController::class, 'store_petugas']);
+
+    Route::put('password', [PasswordController::class, 'update_petugas'])->name('password.update');
+
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy_petugas'])
+        ->name('logout.petugas');
 });

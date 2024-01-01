@@ -21,7 +21,7 @@ class PetugasFactory extends Factory
         $levels = $this->attributes['level'] ?? null;
         return [
             'name' => fake()->name(),
-            'email' => fake()->unique()->userName(),
+            'username' => fake()->name(),
             'level' => $levels ?? 'Admin',
             'password' => bcrypt('password'),
         ];

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Petugas;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
@@ -21,7 +22,12 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Auth/Register');
+        return Inertia::render('Auth/Users/Register');
+    }
+
+    public function create_petugas(): Response
+    {
+        return Inertia::render('Auth/Petugas/Register');
     }
 
     /**
@@ -48,5 +54,28 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         return redirect(RouteServiceProvider::HOME);
+    }
+
+    public function store_petugas(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|lowercase|max:255|unique:'.Petugas::class,
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $petugas = Petugas::create([
+            'name' => $request->name,
+            'username' => $request->email,
+            'password' => Hash::make($request->password),
+            'level' => $request->level,
+        ]);
+
+        event(new Registered($petugas));
+
+        Auth::login($petugas);
+
+        return redirect()
+            ->route('dashboard.petugas');
     }
 }
