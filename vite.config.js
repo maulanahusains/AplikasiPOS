@@ -1,13 +1,23 @@
-import { defineConfig } from 'vite';
-import laravel from 'laravel-vite-plugin';
-import vuePlugin from '@vitejs/plugin-vue';
+import { defineConfig } from 'vite'
+import laravel from 'laravel-vite-plugin'
+import vue from '@vitejs/plugin-vue'
+import vueJSX from '@vitejs/plugin-vue-jsx'
 
 export default defineConfig({
     plugins: [
-        vuePlugin(),
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
-            refresh: true,
+            input: 'resources/js/app.js',
         }),
+
+        vue({
+            template: {
+                transformAssetUrls: {
+                    base: null,
+                    includeAbsolute: false,
+                },
+            },
+        }),
+
+        vueJSX(),
     ],
-});
+})
