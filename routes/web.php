@@ -5,6 +5,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\ProfileController;
+use App\Models\Category;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,6 +44,14 @@ Route::get('/components/buttons', function () {
 Route::middleware(['auth:petugas'])->prefix('adminp4nel')->group(function() {
     Route::middleware(['level:Admin'])->group(function() {
         Route::get('/dashboard', [DashboardController::class, 'dashboard_admin'])->name('dashboard.admin');
+
+        Route::controller(ManageCategory::class)->group(['prefix', 'crud_category'], function () {
+            Route::get('/', 'index');
+            Route::post('/store', 'store');
+            Route::get('/edit/{id}', 'edit');
+            Route::post('/update/{id}', 'update');
+            Route::get('/destroy/{id}', 'destroy');
+        });
     });
     
     Route::middleware(['level:Kasir'])->group(function() {

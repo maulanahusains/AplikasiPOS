@@ -6,13 +6,14 @@ Project Description
 
 ### Todo
 
+- [ ] Develop admin login  
 
 ### In Progress
 
-- [ ] Remake folder structure  
-- [ ] Develop admin login  
+- [ ] Make 1 CRUD testing  
 
 ### Done ✓
 
+- [x] Remake folder structure  
 - [x] Make admin testing  
 
