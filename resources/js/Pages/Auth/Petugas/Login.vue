@@ -15,13 +15,13 @@ defineProps({
 })
 
 const form = useForm({
-    email: '',
+    username: '',
     password: '',
     remember: false
 })
 
 const submit = () => {
-    form.post(route('login'), {
+    form.post(route('postlogin.petugas', 'Admin'), {
         onFinish: () => form.reset('password'),
     })
 }
@@ -38,12 +38,12 @@ const submit = () => {
         <form @submit.prevent="submit">
             <div class="grid gap-6">
                 <div class="space-y-2">
-                    <Label for="email" value="Email" />
+                    <Label for="username" value="Username" />
                     <InputIconWrapper>
                         <template #icon>
                             <MailIcon aria-hidden="true" class="w-5 h-5" />
                         </template>
-                        <Input withIcon id="email" type="email" class="block w-full" placeholder="Email" v-model="form.email" required autofocus autocomplete="username" />
+                        <Input withIcon id="email" type="text" class="block w-full" placeholder="Email" v-model="form.username" required autofocus autocomplete="username" />
                     </InputIconWrapper>
                 </div>
 

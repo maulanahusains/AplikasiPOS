@@ -43,7 +43,8 @@ Route::middleware('guest')->group(function () {
         Route::get('/', [AuthenticatedSessionController::class, 'create_petugas'])
                     ->name('login.petugas');
     
-        Route::post('login/{level}', [AuthenticatedSessionController::class, 'store_petugas']);
+        Route::post('login/{level}', [AuthenticatedSessionController::class, 'store_petugas'])
+            ->name('postlogin.petugas');
     
         Route::get('forgot-password', [PasswordResetLinkController::class, 'create_petugas'])
                     ->name('password.request.petugas');

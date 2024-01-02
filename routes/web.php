@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\CRUD\CategoryController as ManageCategory;
+
 use App\Http\Controllers\Petugas\DashboardController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\ProfileController;
-use App\Models\Category;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -45,16 +47,18 @@ Route::middleware(['auth:petugas'])->prefix('adminp4nel')->group(function() {
     Route::middleware(['level:Admin'])->group(function() {
         Route::get('/dashboard', [DashboardController::class, 'dashboard_admin'])->name('dashboard.admin');
 
-        Route::controller(ManageCategory::class)->group(['prefix', 'crud_category'], function () {
-            Route::get('/', 'index');
-            Route::post('/store', 'store');
-            Route::get('/edit/{id}', 'edit');
-            Route::post('/update/{id}', 'update');
-            Route::get('/destroy/{id}', 'destroy');
+        Route::controller(ManageCategory::class)->prefix('crud_category')->group( function () {
+            Route::get('/', 'index')->name('crud_category.index');
+            Route::post('/store', 'store')->name('crud_category.store');
+            Route::get('/edit/{id}', 'edit')->name('crud_category.edit');
+            Route::post('/update/{id}', 'update')->name('crud_category.update');
+            Route::get('/destroy/{id}', 'destroy')->name('crud_category.destroy');
         });
     });
-    
-    Route::middleware(['level:Kasir'])->group(function() {
+});
+
+Route::middleware(['auth:petugas'])->prefix('cash1er')->group(function() {
+    Route::middleware(['level:Admin,Kasir'])->group(function() {
         Route::get('/dashboard', [DashboardController::class, 'dashboard_petugas'])->name('dashboard.petugas');
     });
 });

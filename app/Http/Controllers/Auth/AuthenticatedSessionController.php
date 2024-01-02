@@ -45,16 +45,18 @@ class AuthenticatedSessionController extends Controller
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 
-    public function store_petugas(LoginRequest $request, $level = null): RedirectResponse
+    public function store_petugas(Request $request, $level = null): RedirectResponse
     {
-        $request->authenticate('username', 'petugas');
-
-        $request->session()->regenerate();
-
-        if(!$level) {
-            return redirect()->route('dashboard.admin');
+        if(Auth::guard('petugas')->attempt($request->only('username', 'password'))) {
+            $request->session()->regenerate();
+    
+            if($level) {
+                return redirect()->route('dashboard.admin');
+            }
+            return redirect()->route('dashboard.petugas');
         }
-        return redirect()->route('dashboard.petugas');
+        return redirect()
+            ->route('login.petugas');
     }
 
     /**
