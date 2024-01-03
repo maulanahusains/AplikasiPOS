@@ -16,28 +16,30 @@ class CategoryTest extends TestCase
     public function test_select_all_data_category(): void
     {
         $petugas = Petugas::factory()->create();
-        $response = $this->actingAs($petugas)->get(route('crud_category.index'));
+        $response = $this->actingAs($petugas, 'petugas')->get(route('crud_category.index'));
 
-        $this->assertAuthenticated();
+        $this->assertAuthenticated('petugas');
         $response->assertStatus(200);
     }
 
     public function test_to_insert_data(): void
     {
-        $petugas = Petugas::factory()->create();
-        $response = $this->actingAs($petugas)->post(route('crud_category.store'), [
+        $petugas = Petugas::factory()->create([
+            'level' => 'Admin'
+        ]);
+        $response = $this->actingAs($petugas, 'petugas')->post(route('crud_category.store'), [
             'category' => 'food',
         ]);
 
-        $this->assertAuthenticated();
-        $response->assertCreated();
+        $this->assertAuthenticated('petugas');
+        $response->assertRedirectToRoute('crud_category.index');
     }
 
     public function test_to_insert_duplicate_data(): void
     {
         $petugas = Petugas::factory()->create();
         $category = Category::factory()->create([ 'category' => 'food' ]);
-        $response = $this->actingAs($petugas)->post(route('crud_category.store'), [
+        $response = $this->actingAs($petugas, 'petugas')->post(route('crud_category.store'), [
             'category' => 'food',
         ]);
 
@@ -48,7 +50,7 @@ class CategoryTest extends TestCase
     public function test_to_insert_empty_data(): void
     {
         $petugas = Petugas::factory()->create();
-        $response = $this->actingAs($petugas)->post(route('crud_category.store'));
+        $response = $this->actingAs($petugas, 'petugas')->post(route('crud_category.store'));
 
         $this->assertAuthenticated();
         $response->assertSessionHas('error');
@@ -58,7 +60,7 @@ class CategoryTest extends TestCase
     {
         $petugas = Petugas::factory()->create();
         $category = Category::factory()->create();
-        $response = $this->actingAs($petugas)->get(route('crud_category.edit', $category->id));
+        $response = $this->actingAs($petugas, 'petugas')->get(route('crud_category.edit', $category->id));
 
         $this->assertAuthenticated();
         $response->assertOk();
@@ -68,7 +70,7 @@ class CategoryTest extends TestCase
     {
         $petugas = Petugas::factory()->create();
         $category = Category::factory()->create();
-        $response = $this->actingAs($petugas)->post(route('crud_category.update', $category->id), [
+        $response = $this->actingAs($petugas, 'petugas')->post(route('crud_category.update', $category->id), [
             'category' => 'updated category'
         ]);
 
@@ -79,7 +81,7 @@ class CategoryTest extends TestCase
     public function test_to_fail_update_data(): void
     {
         $petugas = Petugas::factory()->create();
-        $response = $this->actingAs($petugas)->post(route('crud_category.update', 'wow-data'), [
+        $response = $this->actingAs($petugas, 'petugas')->post(route('crud_category.update', 'wow-data'), [
             'category' => 'updated category'
         ]);
 
@@ -93,7 +95,7 @@ class CategoryTest extends TestCase
     {
         $petugas = Petugas::factory()->create();
         $category = Category::factory()->create();
-        $response = $this->actingAs($petugas)->post(route('crud_category.destroy', $category->id));
+        $response = $this->actingAs($petugas, 'petugas')->post(route('crud_category.destroy', $category->id));
 
         $this->assertAuthenticated();
         $response->assertOk();

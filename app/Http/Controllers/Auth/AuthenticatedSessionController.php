@@ -50,7 +50,7 @@ class AuthenticatedSessionController extends Controller
         if(Auth::guard('petugas')->attempt($request->only('username', 'password'))) {
             $request->session()->regenerate();
     
-            if($level) {
+            if($level == 'Admin') {
                 return redirect()->route('dashboard.admin');
             }
             return redirect()->route('dashboard.petugas');
@@ -75,7 +75,7 @@ class AuthenticatedSessionController extends Controller
 
     public function destroy_petugas(Request $request): RedirectResponse
     {
-        Auth::logout();
+        Auth::guard('petugas')->logout();
 
         $request->session()->invalidate();
 

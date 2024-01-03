@@ -17,9 +17,10 @@ class CategoryFactory extends Factory
      */
     public function definition(): array
     {
+        $names = $this->attributes['category'];
         return [
             'id' => Str::orderedUuid(),
-            'category' => $this->faker->name()
+            'category' => $names ?? $this->faker->name()
         ];
     }
 }

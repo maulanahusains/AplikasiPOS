@@ -10,10 +10,11 @@ Project Description
 
 ### In Progress
 
-- [ ] Make 1 CRUD testing  
+- [ ] Develop CRUD to validate testing  
 
 ### Done ✓
 
+- [x] Make 1 CRUD testing  
 - [x] Remake folder structure  
 - [x] Make admin testing  
 

@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Petugas;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Petugas>
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class PetugasFactory extends Factory
 {
     protected $model = Petugas::class;
+    protected static ?string $password;
     /**
      * Define the model's default state.
      *
@@ -23,7 +25,7 @@ class PetugasFactory extends Factory
             'name' => fake()->name(),
             'username' => fake()->name(),
             'level' => $levels ?? 'Admin',
-            'password' => bcrypt('password'),
+            'password' => static::$password ?? Hash::make('password'),
         ];
     }
 }

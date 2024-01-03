@@ -85,7 +85,7 @@ Route::middleware('auth')->group(function () {
 
 });
 
-Route::middleware(['auth:petugas'])->prefix('adminp4nel')->group(function() {
+Route::middleware(['auth:petugas', 'level:Admin,Kasir'])->prefix('adminp4nel')->group(function() {
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice.petugas');
 

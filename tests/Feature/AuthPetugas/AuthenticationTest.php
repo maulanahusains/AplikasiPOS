@@ -22,7 +22,7 @@ class AuthenticationTest extends TestCase
     public function test_to_authenticate_admin(): void {
         $admin = Petugas::factory()->create();
         
-        $response = $this->post('/adminp4nel/login', [
+        $response = $this->post(route('postlogin.petugas', 'Admin'), [
             'username' => $admin->username,
             'password' => 'password'
         ]);
@@ -32,11 +32,9 @@ class AuthenticationTest extends TestCase
     }
 
     public function test_to_fail_authenticate_admin(): void {
-        $admin = Petugas::factory()->create([
-            'level' => 'Admin'
-        ]);
+        $admin = Petugas::factory()->create();
         
-        $response = $this->post('/adminp4nel/login', [
+        $response = $this->post(route('postlogin.petugas', 'Admin'), [
             'username' => $admin->username,
             'password' => 'wrong-password'
         ]);
@@ -49,7 +47,7 @@ class AuthenticationTest extends TestCase
             'level' => 'Kasir'
         ]);
         
-        $response = $this->post('/adminp4nel/login/Kasir', [
+        $response = $this->post(route('postlogin.petugas', 'Kasir'), [
             'username' => $petugas->username,
             'password' => 'password'
         ]);
@@ -63,7 +61,7 @@ class AuthenticationTest extends TestCase
             'level' => 'Kasir'
         ]);
         
-        $response = $this->post('/adminp4nel/login/Kasir', [
+        $response = $this->post(route('postlogin.petugas', 'Kasir'), [
             'username' => $petugas->username,
             'password' => 'wrong-password'
         ]);
@@ -74,7 +72,18 @@ class AuthenticationTest extends TestCase
     public function test_to_can_logout_admin(): void {
         $admin = Petugas::factory()->create();
         
-        $response = $this->actingAs($admin)->post('/adminp4nel/logout');
+        $response = $this->actingAs($admin, 'petugas')->post(route('logout.petugas'));
+
+        $this->assertGuest();
+        $response->assertRedirectToRoute('login.petugas');
+    }
+
+    public function test_to_can_logout_petugas(): void {
+        $petugas = Petugas::factory()->create([
+            'level' => 'Kasir'
+        ]);
+        
+        $response = $this->actingAs($petugas, 'petugas')->post(route('logout.petugas'));
 
         $this->assertGuest();
         $response->assertRedirectToRoute('login.petugas');

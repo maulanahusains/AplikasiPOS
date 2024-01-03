@@ -11,6 +11,7 @@ class Category extends Model
     protected $keyType = 'string';
     protected $increment = false;
     protected $fillable = [
+        'id',
         'category'
     ];
 
