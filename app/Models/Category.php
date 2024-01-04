@@ -24,4 +24,14 @@ class Category extends Model
     {
         return $this->hasMany(Category::class, 'id_category', 'id');
     }
+
+    static function validateAndCreate(array $attributes)
+    {
+        $existingRecord = self::find($attributes['id']);
+
+        if ($existingRecord === null) {
+            return self::create($attributes);
+        }
+        return false;
+    }
 }

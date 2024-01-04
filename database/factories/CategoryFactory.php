@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -10,6 +11,7 @@ use Illuminate\Support\Str;
  */
 class CategoryFactory extends Factory
 {
+    protected $model = Category::class;
     /**
      * Define the model's default state.
      *
@@ -17,10 +19,9 @@ class CategoryFactory extends Factory
      */
     public function definition(): array
     {
-        $names = $this->attributes['category'];
         return [
             'id' => Str::orderedUuid(),
-            'category' => $names ?? $this->faker->name()
+            'category' => $this->faker->name()
         ];
     }
 }
