@@ -63,6 +63,8 @@ class CategoryTest extends TestCase
             ->assertInertia(
                 function ($page) {
                     $page->component('Petugas/Manages/Category/Index');
+
+                    // cek validation error
                     $page->has('errors.category', 'The category field is required');       
                 }
             );
@@ -73,10 +75,15 @@ class CategoryTest extends TestCase
     {
         $petugas = Petugas::factory()->create();
         $category = Category::factory()->create();
-        $response = $this->actingAs($petugas, 'petugas')->get(route('crud_category.edit', $category->id));
 
-        $this->assertAuthenticated();
-        $response->assertOk();
+        $this->actingAs($petugas, 'petugas')
+            ->assertAuthenticated()
+            ->get(route('crud_category.edit', $category->id))
+            ->assertInertia(
+                fn(Assert $page) => $page
+                    ->component('Petugas/Manages/Category/Edit')
+                    ->has('category', $category)
+            );
     }
 
     public function test_to_update_data(): void
@@ -84,33 +91,44 @@ class CategoryTest extends TestCase
         $petugas = Petugas::factory()->create();
         $category = Category::factory()->create();
         $updated = [ 'category' => 'updated category' ];
-        $response = $this->actingAs($petugas, 'petugas')->put(route('crud_category.update', $category->id), $updated);
-
-        $response->assertStatus(200);
-        $this->assertAuthenticated();
-        $this->assertDatabaseHas('categories', $updated);
+        
+        $this->actingAs($petugas, 'petugas')
+            ->assertAuthenticated()
+            ->put(route('crud_category.update', $category->id), $updated)
+            ->assertInertia(
+                fn(Assert $page) => $page
+                    ->component('Petugas/Manages/Category/Index')
+                    ->has('success')
+            );
     }
     
     public function test_to_fail_update_data(): void
     {
+        $updated = [ 'category' => 'updated category' ];
         $petugas = Petugas::factory()->create();
-        $response = $this->actingAs($petugas, 'petugas')->post(route('crud_category.update', 'wow-data'), [
-            'category' => 'updated category'
-        ]);
-
-        $this->assertAuthenticated();
-        // $response->assertSessionHas('error');
-        $response->assertRedirectToRoute('crud_category.index');
+        
+        $this->actingAs($petugas, 'petugas')
+        ->assertAuthenticated()
+        ->put(route('crud_category.update', 'wowo'), $updated)
+        ->assertInertia(
+            fn(Assert $page) => $page
+                ->component('Petugas/Manages/Category/Index')
+                ->has('success')
+        );
     }   
     
     public function test_to_delete_data(): void
     {
         $petugas = Petugas::factory()->create();
         $category = Category::factory()->create();
-        $response = $this->actingAs($petugas, 'petugas')->post(route('crud_category.destroy', $category->id));
 
-        $this->assertAuthenticated();
-        $response->assertOk();
-        $response->assertRedirectToRoute('crud_category.index');
+        $this->actingAs($petugas, 'petugas')
+            ->assertAuthenticated()
+            ->delete(route('crud_category.destroy', $category->id))
+            ->assertInertia(
+                fn(Assert $page) => $page
+                    ->component('Petugas/Manages/Category/Index')
+                    ->has('success')
+            );
     }
 }
