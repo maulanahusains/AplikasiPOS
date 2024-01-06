@@ -50,9 +50,9 @@ Route::middleware(['auth:petugas'])->prefix('adminp4nel')->group(function() {
         Route::controller(ManageCategory::class)->prefix('crud_category')->group( function () {
             Route::get('/', 'index')->name('crud_category.index');
             Route::post('/store', 'store')->name('crud_category.store');
-            Route::get('/edit/{category}', 'edit')->name('crud_category.edit');
-            Route::put('/update/{category}', 'update')->name('crud_category.update');
-            Route::get('/destroy/{category}', 'destroy')->name('crud_category.destroy');
+            Route::get('/edit/{id}', 'edit')->name('crud_category.edit');
+            Route::put('/update/{id}', 'update')->name('crud_category.update');
+            Route::get('/destroy/{id}', 'destroy')->name('crud_category.destroy');
         });
     });
 });

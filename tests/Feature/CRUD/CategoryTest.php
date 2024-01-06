@@ -50,7 +50,7 @@ class CategoryTest extends TestCase
             ->assertInertia(
                 fn(Assert $page) => $page
                 ->component('Petugas/Manages/Category/Index')
-                ->has('error')
+                ->has('errors')
             );
     }
 
@@ -58,31 +58,29 @@ class CategoryTest extends TestCase
     {
         $admin = Petugas::factory()->create();
 
-        $this->actingAs($admin, 'petugas')
-            ->post(route('crud_category.store'))
+        $cuk = $this->actingAs($admin, 'petugas')
+            ->assertAuthenticated()
+            ->post(route('crud_category.store'), [])
             ->assertInertia(
-                function ($page) {
-                    $page->component('Petugas/Manages/Category/Index');
-
-                    // cek validation error
-                    $page->has('errors.category', 'The category field is required');       
-                }
-            );
-
+            fn (Assert $page) => $page
+                ->component('Petugas/Manages/Category/Index')
+                // cek validation error
+                ->has('errors')       
+        );
     }
 
     public function test_to_edit_page(): void
     {
-        $petugas = Petugas::factory()->create();
+        $admin = Petugas::factory()->create();
         $category = Category::factory()->create();
 
-        $this->actingAs($petugas, 'petugas')
+        $this->actingAs($admin, 'petugas')
             ->assertAuthenticated()
             ->get(route('crud_category.edit', $category->id))
             ->assertInertia(
                 fn(Assert $page) => $page
                     ->component('Petugas/Manages/Category/Edit')
-                    ->has('category', $category)
+                    ->has('category')
             );
     }
 

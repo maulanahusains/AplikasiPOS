@@ -5,6 +5,7 @@ namespace App\Http\Controllers\CRUD;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -19,32 +20,31 @@ class CategoryController extends Controller
     }
     
     public function store(Request $request) {
-        $validated = $request->validate([
-            'category' => 'required|string'
+        $validated = Validator::Make($request->except(['_token']), [
+            'category' => 'required|unique:categories'
         ]);
-        $validated['id'] = Str::orderedUuid();
 
-        $result = Category::where('category', $validated['category'])->first();
-        
-        if($result !== null) {
+        if($validated->fails()) {
             return Inertia::render('Petugas/Manages/Category/Index', [
-                'categories' => Category::all(),
-                'error' => 'Category already exists.'
+                'errors' => $validated->errors()
             ]);
         }
         
-        Category::create($validated);
+        Category::create(array_merge($validated->validated(), ['id' => Str::orderedUuid()]));
         return Inertia::render('Petugas/Manages/Category/Index', [
             'categories' => Category::all(),
             'success' => 'Category created successfully.'
         ]);
     }
 
-    public function edit(Category $category) {
-        return Inertia::render('Petugas/Manages/Category/Edit', $category);
+    public function edit($id) {
+        return Inertia::render('Petugas/Manages/Category/Edit', [
+            'category' => Category::find($id)
+        ]);
     }
 
-    public function update(Request $request, Category $category) {
+    public function update(Request $request, $id) {
+        $category = Category::find($id);
         $validated = $request->validate([
             'category' => 'required|string'
         ]);
